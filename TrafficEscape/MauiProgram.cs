@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui;
+using Plugin.Maui.Audio;
+using TrafficEscape.Services;
 
 namespace TrafficEscape
 {
@@ -9,11 +12,21 @@ namespace TrafficEscape
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+            //added services
+            builder.Services.AddSingleton<SaveService>();
+            builder.Services.AddSingleton<SoundService>();
+            builder.Services.AddSingleton<SkinService>();
+            builder.Services.AddSingleton<GameStateService>();
+
+            //audio service
+            builder.Services.AddSingleton<AudioManager>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

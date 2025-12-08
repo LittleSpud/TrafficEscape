@@ -1,40 +1,67 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             x:Class="TrafficEscape.Pages.MainMenuPage">
+             x:Class="TrafficEscape.Pages.MainMenuPage"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TrafficEscape.ViewModels"
+             Title="Traffic Escape">
+	<ContentPage.BindingContext>
+		<vm:MainMenuViewModel />
+	</ContentPage.BindingContext>
 
-    <VerticalStackLayout Spacing="25" VerticalOptions="Center" HorizontalOptions="Center">
-        <Label Text="Traffic Escape"
-               FontSize="48"
-               FontAttributes="Bold"
-               HorizontalOptions="Center"
-               Margin="0,40,0,20"/>
+	<Grid Padding="30">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="2*" />
+			<RowDefinition Height="3*" />
+		</Grid.RowDefinitions>
 
-        <Button Text="Start Game"
-                FontSize="24"
-                HorizontalOptions="Center"
-                WidthRequest="200"
-                Clicked="StartGame"/>
+		<!-- GAME TITLE -->
+		<VerticalStackLayout Grid.Row="0"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+			<Label Text="TRAFFIC ESCAPE"
+                   FontSize="36"
+                   TextColor="White"
+                   HorizontalOptions="Center">
+				<Label.Triggers>
+					<EventTrigger Event="Loaded">
+						<BeginAnimation TargetProperty="Opacity"
+                                        Duration="1500"
+                                        From="0"
+                                        To="1" />
+					</EventTrigger>
+				</Label.Triggers>
+			</Label>
+		</VerticalStackLayout>
 
-        <Button Text="Shop"
-                FontSize="19"
-                HorizontalOptions="Center"
-                WidthRequest="200"
-                Margin="0,20,0,0"
-                Clicked="OpenShop"/>
+		<!-- BUTTONS -->
+		<VerticalStackLayout Grid.Row="1"
+                             Spacing="20"
+                             VerticalOptions="Center">
 
-        <Button Text="High Scores"
-                FontSize="19"
-                HorizontalOptions="Center"
-                WidthRequest="200"
-                Margin="0,20,0,0"
-                Clicked="HighScores"/>
+			<Button Text="PLAY"
+                    FontSize="22"
+                    BackgroundColor="#2c3e50"
+                    TextColor="White"
+                    Command="{Binding PlayCommand}" />
 
-        <Button Text="Settings" 
-                FontSize="19"
-                HorizontalOptions="Center"
-                WidthRequest="200"
-                Margin="0,20,0,0"
-                Clicked="OpenSettings"/>
+			<Button Text="SETTINGS"
+                    FontSize="22"
+                    BackgroundColor="#34495e"
+                    TextColor="White"
+                    Command="{Binding SettingsCommand}" />
 
-    </VerticalStackLayout>
+			<Button Text="SHOP"
+                    FontSize="22"
+                    BackgroundColor="#16a085"
+                    TextColor="White"
+                    Command="{Binding ShopCommand}" />
+
+			<Button Text="QUIT"
+                    FontSize="22"
+                    BackgroundColor="#c0392b"
+                    TextColor="White"
+                    Command="{Binding QuitCommand}" />
+
+		</VerticalStackLayout>
+	</Grid>
 
 </ContentPage>
