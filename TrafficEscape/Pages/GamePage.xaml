@@ -1,19 +1,101 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             x:Class="TrafficEscape.Pages.GamePage">
-    <Grid>
-        <Image x:Name="Road" Source="road.png" Aspect="Fill"/>
-        <AbsoluteLayout x:Name="GameArea"/>
+<ContentPage  x:Class="TrafficEscape.Pages.GamePage"
+              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              BackgroundColor="Black">
+    <Grid x:Name="RootGrid">
+		<!--GAMEPLAY AREAA-->>
+		<Grid x:Name="GameArea"
+			  rowspacing="0"
+			  columnspacing="0">
+			
+			<!--BACKGROUND - ROAD-->>
+			<Grid>
+				<Image Source="road.png"
+					   Aspect="Fill"
+					   Opacity="0.9"/>
+			</Grid>
 
+			<!--LANE LAYOUT WITH 3 LANES-->>
+				<Grid ColumnDefinitions="*, *, *"
+					  x:Name="LaneGrid"
+					  HorizontalOptions="Fill"
+					  VerticalOptions="Fill">
+				<!--Left Lane-->> 
+				<Grid BackgroundColor ="Transparent"/>
+				<!--Middle Lane-->>
+				<Grid BackgroundColor ="Transparent"/>
+				<!--Right Lane-->>
+				<Grid BackgroundColor ="Transparent"/>
+				</Grid>
 
-        <Label x:Name="ScoreLabel"
-               FontSize="32"
-               TextColor="White"
-               Margin="20"/>
+			<!--Obstacles(enemies)-->>
+			<AbsoluteLayout x:Name="PickupLayer"
+							HorizontalOptions="Fill"
+							VerticalOptions="Fill"/>
+			<!--Player car-->>
+			<Image x:Name="PlayerCar"
+				   Source="car_default.png"
+				   WidthRequest="80"
+				   HeightRequest="160"
+				   AbsoluteLayout.LayoutFlags="PositionProportional"
+				   AbsoluteLayout.LayoutBounds="0.5, 0.8, 80, 160"/>
+		</Grid>
 
-        <Button Text="Pause"
-                Clicked="PauseClicked"
-                HorizontalOptions="End"
-                VerticalOptions="Start"/>
+		<!--HUD-->>
+		<Grid Padding="15"
+			  HorizontalOptions="Fill"
+			  VerticalOptions="Start"
+			  RowSpacing="5">
+			
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			
+		<!--Score Display-->>
+		<VerticalStackLayout Grid.Column="0">
+			<Label Text="Score:"
+				   TextColor="Red"
+				   FontSize="18"/>
+			<Label x:Name="ScoreLabel"
+				   Text="0"
+				   TextColor="Yellow"
+				   FontSize="32"
+				   FontAttributes="Bold"/>
+		</VerticalStackLayout>
 
+		<!--Coin Display-->>
+		<VerticalStackLayout Grid.Column="1"
+							 HorizontalOptions="End">
+			<HorizontalStackLayout>
+				
+				<Image Source="coin.png"
+					   WidthRequest="30"
+					   HeightRequest="30"/>
+				
+				<Label x:Name="CoinLabel"
+					   Text="0"
+					   TextColor="Gold"
+					   FontSize="24"
+					   VerticalOptions="Center"/>
+			</HorizontalStackLayout>
+		</VerticalStackLayout>
+		</Grid>
+
+		<!--TOUCH GESTURE HANDLER-->>
+		<Grid x:Name="TouchPad"
+			  BackgroundColor="Transparent"
+			  VerticalOptions="Fill"
+			  HorizontalOptions="Fill">
+			
+			<Grid.GestureRecognizers>
+				<SwipeGestureRecognizer Direction="Left"/>
+				<SwipeGestureRecognizer Direction="Right"/>
+				<TapGestureRecognizer NumberOfTapsRequired="1"/>
+			</Grid.GestureRecognizers>
+			
+		</Grid>
+		
     </Grid>
+	
 </ContentPage>
