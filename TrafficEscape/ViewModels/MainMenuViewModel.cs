@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TrafficEscape.Pages;
 
@@ -11,7 +12,6 @@ public class MainMenuViewModel : BindableObject
     public ICommand ShopCommand { get; }
     public ICommand QuitCommand { get; }
 
-}
     public MainMenuViewModel()
     {
         PlayCommand = new Command(async () => await GoToGame());
@@ -19,18 +19,22 @@ public class MainMenuViewModel : BindableObject
         ShopCommand = new Command(async () => await GoToShop());
         QuitCommand = new Command(QuitGame);
     }
+
     private async Task GoToGame()
     {
         await Application.Current.MainPage.Navigation.PushAsync(new GamePage());
     }
+
     private async Task GoToSettings()
     {
         await Application.Current.MainPage.Navigation.PushAsync(new SettingsPage());
     }
+
     private async Task GoToShop()
     {
         await Application.Current.MainPage.Navigation.PushAsync(new ShopPage());
     }
+
     private void QuitGame()
     {
         //only works on windows/android
