@@ -45,7 +45,7 @@ public partial class GamePage : ContentPage
     //==============================
     private void CalculateLanePositions()
     {
-        double width = LaneGrid.width;
+        double width = LaneGrid.Width;
 
         if (width <= 0)
         {
@@ -62,7 +62,7 @@ public partial class GamePage : ContentPage
     {
         double x = LanePositions[PlayerCarModel.CurrentLane];
 
-        AbsolouteLayout.SetLayoutBounds(PlayerCar,
+        AbsoluteLayout.SetLayoutBounds(PlayerCar,
             new Rect(x - (PlayerCar.Width / 2),
                      this.Height * 0.75,
                      PlayerCarWidth,
@@ -125,13 +125,13 @@ public partial class GamePage : ContentPage
 
     private async Task AnimateCarToLane(int lane)
     {
-        IsMoving = true;
+        isMoving = true;
         double targetX = LanePositions[lane] - (PlayerCar.Width / 2);
 
         await PlayerCar.TranslateTo(targetX - PlayerCar.X, 0, 150, Easing.CubicOut);
 
         PositionPlayerCar();
-        IsMoving = false;
+        isMoving = false;
     }
 
     //================================
@@ -141,7 +141,7 @@ public partial class GamePage : ContentPage
     {
         IsGameRunning = true;
 
-        Device.StartTimer(TimeSpan.FromMilliseconds(16), () =>
+        Dispatcher.StartTimer(TimeSpan.FromMilliseconds(16), () =>
         {
             if (!IsGameRunning) return false;
             UpdateGame(0.016);
@@ -167,7 +167,7 @@ public partial class GamePage : ContentPage
     //================================
     private void StartSpawnLoop()
     {
-        Device.StartTimer(TimeSpan.FromMilliseconds(500), () =>
+        Dispatcher.StartTimer(TimeSpan.FromMilliseconds(500), () =>
         {
             if (!IsGameRunning) return false;
 
