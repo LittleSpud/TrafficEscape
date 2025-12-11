@@ -29,9 +29,14 @@
 				</Grid>
 
 			<!--Obstacles(enemies)-->>
+			<AbsoluteLayout x:Name="ObstacleLayer"
+							HorizontalOptions="Fill"
+							VerticalOptions="Fill"/>
+			<!--Pickups-->>
 			<AbsoluteLayout x:Name="PickupLayer"
 							HorizontalOptions="Fill"
 							VerticalOptions="Fill"/>
+			
 			<!--Player car-->>
 			<Image x:Name="PlayerCar"
 				   Source="car_default.png"
@@ -82,19 +87,30 @@
 		</VerticalStackLayout>
 		</Grid>
 
-		<!--TOUCH GESTURE HANDLER-->>
+		<!--Touch Gesture Handlere-->>
 		<Grid x:Name="TouchPad"
 			  BackgroundColor="Transparent"
 			  VerticalOptions="Fill"
-			  HorizontalOptions="Fill">
-			
+			  HorizontalOptions="Fill"
+			  ColumnDefinitions="*,*">
+
+		<!-- Left Touch Area -->
+		<Grid Grid.Column="0" x:Name="LeftTouch" BackgroundColor="Transparent">
 			<Grid.GestureRecognizers>
-				<SwipeGestureRecognizer Direction="Left"/>
-				<SwipeGestureRecognizer Direction="Right"/>
-				<TapGestureRecognizer NumberOfTapsRequired="1"/>
+				<TapGestureRecognizer Tapped="OnLeftTapped" />
+				<SwipeGestureRecognizer Direction="Right" Swiped="OnRightSwipe" />
 			</Grid.GestureRecognizers>
-			
 		</Grid>
+
+		<!-- Right Touch Area -->
+		<Grid Grid.Column="1" x:Name="RightTouch" BackgroundColor="Transparent">
+			<Grid.GestureRecognizers>
+				<TapGestureRecognizer Tapped="OnRightTapped" />
+				<SwipeGestureRecognizer Direction="Left" Swiped="OnLeftSwipe" />
+			</Grid.GestureRecognizers>
+		</Grid>
+
+	</Grid>
 		
     </Grid>
 	

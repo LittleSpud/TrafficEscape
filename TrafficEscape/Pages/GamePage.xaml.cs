@@ -84,21 +84,32 @@ public partial class GamePage : ContentPage
 
         // Tap (decide left/right bassed on position)
         var tap = new TapGestureRecognizer();
-        tap.Tapped += OnScreenTapped;
 
         TouchPad.GestureRecognizers.Add(swipeLeft);
         TouchPad.GestureRecognizers.Add(swipeRight);
         TouchPad.GestureRecognizers.Add(tap);
     }
 
-    private void OnScreenTapped(object sender, EventArgs e)
+    // tap
+    private void OnLeftTapped(object sender, TappedEventArgs e)
     {
-        double x = e.GetPosition(TouchPad).Value.X;
+        MoveLeft();
+    }
 
-        if (x < TouchPad.Width / 2)
-            MoveLeft();
-        else
-            MoveRight();
+    private void OnRightTapped(object sender, TappedEventArgs e)
+    {
+        MoveRight();
+    }
+
+    // swipe
+    private void OnLeftSwipe(object sender, SwipedEventArgs e)
+    {
+        MoveLeft();
+    }
+
+    private void OnRightSwipe(object sender, SwipedEventArgs e)
+    {
+        MoveRight();
     }
 
     //==============================

@@ -20,19 +20,42 @@ public class MainMenuViewModel : BindableObject
         QuitCommand = new Command(QuitGame);
     }
 
+    private INavigation? GetNavigation()
+    {
+        var app = Application.Current;
+        if (app != null && app.Windows.Count > 0)
+        {
+            var mainPage = app.Windows[0].Page;
+            return mainPage?.Navigation;
+        }
+        return null;
+    }
+
     private async Task GoToGame()
     {
-        await Application.Current.MainPage.Navigation.PushAsync(new GamePage());
+        var navigation = GetNavigation();
+        if (navigation != null)
+        {
+            await navigation.PushAsync(new GamePage());
+        }
     }
 
     private async Task GoToSettings()
     {
-        await Application.Current.MainPage.Navigation.PushAsync(new SettingsPage());
+        var navigation = GetNavigation();
+        if (navigation != null)
+        {
+            await navigation.PushAsync(new SettingsPage());
+        }
     }
 
     private async Task GoToShop()
     {
-        await Application.Current.MainPage.Navigation.PushAsync(new ShopPage());
+        var navigation = GetNavigation();
+        if (navigation != null)
+        {
+            await navigation.PushAsync(new ShopPage());
+        }
     }
 
     private void QuitGame()
