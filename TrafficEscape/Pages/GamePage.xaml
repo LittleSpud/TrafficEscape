@@ -30,12 +30,12 @@
 
 			<!--Obstacles(enemies)-->>
 			<AbsoluteLayout x:Name="ObstacleLayer"
-							HorizontalOptions="Fill"
-							VerticalOptions="Fill"/>
+							AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+							AbsoluteLayout.LayoutFlags="All"/>
 			<!--Pickups-->>
 			<AbsoluteLayout x:Name="PickupLayer"
-							HorizontalOptions="Fill"
-							VerticalOptions="Fill"/>
+						AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+						AbsoluteLayout.LayoutFlags="All"/>
 			
 			<!--Player car-->>
 			<Image x:Name="PlayerCar"

@@ -10,6 +10,7 @@ namespace TrafficEscape.Pages;
 
 public partial class GamePage : ContentPage
 {
+    //lane info
     private Car PlayerCarModel = new Car();
     private double[] LanePositions = new double[3];
 
@@ -26,10 +27,18 @@ public partial class GamePage : ContentPage
     private readonly List<Obstacle> Obstacles = new();
     private readonly List<Pickup> Pickups = new();
 
+    //difficulty increaser
+    private DifficultyManager difficulty;
+    private IDispatcherTimer? difficultyTimer;
+
     public GamePage()
     {
         InitializeComponent();
         SetupInput();
+
+        //initialise difficulty system
+        difficulty = new DifficultyManager();
+        StartDifficultyTimer();
     }
 
     protected override void OnAppearing()
@@ -41,7 +50,7 @@ public partial class GamePage : ContentPage
         StartSpawnLoop();
     }
     //==============================
-    //LANE POSITIONING 
+    //Lane positioning
     //==============================
     private void CalculateLanePositions()
     {
@@ -70,7 +79,7 @@ public partial class GamePage : ContentPage
     }
 
     //==============================
-    //INPUT HANDLING 
+    //Input handling
     //==============================
     private void SetupInput()
     {
@@ -82,54 +91,28 @@ public partial class GamePage : ContentPage
         var swipeRight = new SwipeGestureRecognizer { Direction = SwipeDirection.Right };
         swipeRight.Swiped += (s, e) => MoveRight();
 
-        // Tap (decide left/right bassed on position)
-        var tap = new TapGestureRecognizer();
-
         TouchPad.GestureRecognizers.Add(swipeLeft);
         TouchPad.GestureRecognizers.Add(swipeRight);
-        TouchPad.GestureRecognizers.Add(tap);
-    }
-
-    // tap
-    private void OnLeftTapped(object sender, TappedEventArgs e)
-    {
-        MoveLeft();
-    }
-
-    private void OnRightTapped(object sender, TappedEventArgs e)
-    {
-        MoveRight();
-    }
-
-    // swipe
-    private void OnLeftSwipe(object sender, SwipedEventArgs e)
-    {
-        MoveLeft();
-    }
-
-    private void OnRightSwipe(object sender, SwipedEventArgs e)
-    {
-        MoveRight();
     }
 
     //==============================
     //Player Movement
     //==============================
     private bool isMoving = false;
+
+    public double PlayerCarWidth { get; private set; }
+    public double PlayerCarHeight { get; private set; }
+
     private async void MoveLeft()
     {
-        if (isMoving) return;
-        if (PlayerCarModel.CurrentLane <= 0) return;
-
+        if (isMoving || PlayerCarModel.CurrentLane <= 0) return;
         PlayerCarModel.CurrentLane--;
         await AnimateCarToLane(PlayerCarModel.CurrentLane);
     }
 
     private async void MoveRight()
     {
-        if (isMoving) return;
-        if (PlayerCarModel.CurrentLane >= 2) return;
-
+        if (isMoving || PlayerCarModel.CurrentLane >= 2) return;
         PlayerCarModel.CurrentLane++;
         await AnimateCarToLane(PlayerCarModel.CurrentLane);
     }
@@ -144,6 +127,8 @@ public partial class GamePage : ContentPage
         PositionPlayerCar();
         isMoving = false;
     }
+    private void OnLeftTapped(object sender, TappedEventArgs e) => MoveLeft();
+    private void OnRightTapped(object sender, TappedEventArgs e) => MoveRight();
 
     //================================
     //Game loop
@@ -152,9 +137,12 @@ public partial class GamePage : ContentPage
     {
         IsGameRunning = true;
 
+
         Dispatcher.StartTimer(TimeSpan.FromMilliseconds(16), () =>
         {
-            if (!IsGameRunning) return false;
+            if (!IsGameRunning) 
+                return false;
+
             UpdateGame(0.016);
             return true;
         });
@@ -162,16 +150,16 @@ public partial class GamePage : ContentPage
 
     private void UpdateGame(double delta)
     {
-        //increase player score
-        Score += delta * 10;
+        //increase player score + speed
+        Score += delta * 10 * difficulty.DifficultyLevel;
         ScoreLabel.Text = ((int)Score).ToString();
+
+        //difficulty increases over time/game speeds up (Like subway surfers)
+        GameSpeed += delta * 0.1;
 
         //obstacles and pickups
         UpdateObstacles(delta);
         UpdatePickups(delta);
-
-        //difficulty increases over time/game speeds up (Like subway surfers)
-        GameSpeed += delta * 0.1;
     }
     //================================
     //Obstacles/enemies
@@ -192,7 +180,7 @@ public partial class GamePage : ContentPage
         int lane = rng.Next(0, 3);
         double roll = rng.NextDouble();
 
-        if (roll < 0.6)
+        if (roll < 0.6 + difficulty.DifficultyLevel * 0.1)
             SpawnObstacle(lane);
         else
             SpawnPickup(lane);
@@ -211,7 +199,7 @@ public partial class GamePage : ContentPage
         {
             Lane = lane,
             Sprite = img,
-            Speed = GameSpeed,
+            Speed = difficulty.DifficultyLevel,
             Y = -200
         };
 
@@ -264,7 +252,8 @@ public partial class GamePage : ContentPage
             HeightRequest = 60,
         };
 
-        var type = img.Source.ToString().Contains("coin") ? PickupType.Coin : PickupType.Fuel;
+        string sourceStr = img.Source?.ToString() ?? string.Empty;
+        PickupType type = sourceStr.Contains("coin") ? PickupType.Coin : PickupType.Fuel;
 
         var p = new Pickup
         {
@@ -320,7 +309,21 @@ public partial class GamePage : ContentPage
     }
 
     // ==========================================
-    // COLLISION DETECTION
+    // Difficulty timer
+    // ==========================================
+    private void StartDifficultyTimer()
+    {
+        difficultyTimer = Dispatcher.CreateTimer();
+        difficultyTimer.Interval = TimeSpan.FromSeconds(5);
+        difficultyTimer.Tick += (s, e) =>
+        {
+            difficulty.IncreaseDifficulty();
+        };
+        difficultyTimer.Start();
+    }
+
+    // ==========================================
+    // Collision detection
     // ==========================================
     private bool CheckCollision(View obj)
     {
@@ -336,6 +339,10 @@ public partial class GamePage : ContentPage
     private async void GameOver()
     {
         IsGameRunning = false;
+        if (difficultyTimer != null)
+        {
+            difficultyTimer.Stop();
+        }
 
         await DisplayAlert("Crash!", $"Score: {(int)Score}", "OK");
 

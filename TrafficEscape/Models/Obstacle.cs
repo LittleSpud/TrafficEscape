@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TrafficEscapeGame.Models;
+namespace TrafficEscape.Models;
 
 public class Obstacle
 {
