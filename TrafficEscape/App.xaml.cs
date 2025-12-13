@@ -1,15 +1,15 @@
 ﻿using TrafficEscape.Services;
 
-namespace TrafficEscape
-{
+namespace TrafficEscape;
     public partial class App : Application
     {
         public App()
         {
             InitializeComponent();
 
-            App.Current.UserAppTheme = GameSettings.UserDarkMode ? AppTheme.Dark : AppTheme.Light;
-            MainPage = new NavigationPage(new MainMenuPage());
+            // Apply saved theme
+            App.Current.UserAppTheme =
+                GameSettings.UserDarkMode ? AppTheme.Dark : AppTheme.Light;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
@@ -17,4 +17,3 @@ namespace TrafficEscape
             return new Window(new AppShell());
         }
     }
-}

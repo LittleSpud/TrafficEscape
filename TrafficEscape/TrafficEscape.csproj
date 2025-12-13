@@ -69,6 +69,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="AppShell.xaml.cs">
+	    <DependentUpon>AppShell.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="AppShell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\GamePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
