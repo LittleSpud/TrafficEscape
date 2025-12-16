@@ -23,6 +23,21 @@ public partial class MainMenuPage : ContentPage
         await TitleLabel.FadeTo(1, 1200, Easing.CubicOut);
 
     }
+    private async void OnStart(object sender, EventArgs e)
+    {
+        SoundService.PlayClick();
+        await Shell.Current.GoToAsync(nameof(GamePage));
+    }
+    private async void OnSettings(object sender, EventArgs e)
+    {
+        SoundService.PlayClick();
+        await Shell.Current.GoToAsync(nameof(SettingsPage));
+    }
+    private async void OnShop(object sender, EventArgs e)
+    {
+        SoundService.PlayClick();
+        await Shell.Current.GoToAsync(nameof(ShopPage));
+    }
     private async void OnButtonPressed(object sender, EventArgs e)
     {
         if (sender is not Button btn) return;

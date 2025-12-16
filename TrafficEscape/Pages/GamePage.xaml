@@ -4,7 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="Black">
 
-    <AbsoluteLayout>
+    <AbsoluteLayout 
+            x:Name="RootLayout"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All">
+
+        <BoxView
+            Color="DarkSlateGray"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"/>
 
         <!-- background -->
         <Image
@@ -41,7 +49,7 @@
                         AbsoluteLayout.LayoutFlags="All" />
 
         <!-- player car -->
-        <Image x:Name="PlayerCar"
+        <Image x:Name="PlayerCarView"
                Source="car_default.png"
                WidthRequest="80"
                HeightRequest="160"
@@ -60,14 +68,14 @@
 
             <!-- score -->
             <VerticalStackLayout Grid.Column="0">
-                <Label Text="Score"
-                       TextColor="Red"
-                       FontSize="18" />
-                <Label x:Name="ScoreLabel"
-                       Text="0"
-                       TextColor="Yellow"
-                       FontSize="32"
-                       FontAttributes="Bold" />
+                <Label 
+                    x:Name="ScoreLabel"
+                    Text="0"
+                    TextColor="Yellow"
+                    FontSize="24"
+                     FontAttributes="Bold"
+                    AbsoluteLayout.LayoutBounds="0.05,0.05,-1,-1"
+                    AbsoluteLayout.LayoutFlags="PositionProportional" />
             </VerticalStackLayout>
 
             <!-- coin pickup -->

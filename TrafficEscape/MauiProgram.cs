@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Maui;
+using Microsoft.Extensions.Logging;
 using TrafficEscape.Services;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
+using Plugin.Maui.Audio;
 
 namespace TrafficEscape
 {
@@ -15,16 +19,16 @@ namespace TrafficEscape
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-
-           // builder.Services.AddSingleton<SaveService>();
-           // builder.Services.AddSingleton<SoundService>();
+            builder.Services.AddSingleton(AudioManager.Current);
+            //builder.Services.AddSingleton<SaveService>();
+            //builder.Services.AddSingleton<SoundService>();
             //builder.Services.AddSingleton<SkinService>();
 
-            
+
             //builder.Services.AddSingleton<AudioManager>();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

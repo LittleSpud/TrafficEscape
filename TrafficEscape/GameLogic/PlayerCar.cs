@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
