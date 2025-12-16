@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TrafficEscape.Services;
 
-namespace TrafficEscape.Pages
+namespace TrafficEscape.Pages;
+
+public partial class SettingsPage : ContentPage
 {
-    internal class SettingsPage
+    public SettingsPage()
     {
+        InitializeComponent();
+        DarkModeSwitch.IsToggled = GameSettings.UserDarkMode;
+    }
+
+    private void OnDarkModeToggled(object sender, ToggledEventArgs e)
+    {
+        GameSettings.UserDarkMode = e.Value;
+        Application.Current.UserAppTheme =
+            e.Value ? AppTheme.Dark : AppTheme.Light;
     }
 }

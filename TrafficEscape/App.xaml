@@ -3,11 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:TrafficEscape"
              x:Class="TrafficEscape.App">
+
     <Application.Resources>
 		<Color x:Key="BgDark">#0B0B0D</Color>
 		<Color x:Key="BgLight">#F2F2F3</Color>
 		<Style TargetType="ContentPage">
 			<Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource BgDark}, Light={StaticResource BgLight}}"/>
 		</Style>
+        <Style x:Key="MenuButtonBase" TargetType="Button">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="BorderWidth" Value="3"/>
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="WidthRequest" Value="220"/>
+            <Setter Property="HeightRequest" Value="60"/>
+        </Style>
+
+        <Style x:Key="MenuButtonRed"
+       TargetType="Button"
+       BasedOn="{StaticResource MenuButtonBase}">
+            <Setter Property="TextColor" Value="Red"/>
+            <Setter Property="BorderColor" Value="Red"/>
+        </Style>
+
+        <Style x:Key="MenuButtonBlue"
+       TargetType="Button"
+       BasedOn="{StaticResource MenuButtonBase}">
+            <Setter Property="TextColor" Value="DodgerBlue"/>
+            <Setter Property="BorderColor" Value="DodgerBlue"/>
+        </Style>
+
+        <Style x:Key="MenuButtonGreen"
+       TargetType="Button"
+       BasedOn="{StaticResource MenuButtonBase}">
+            <Setter Property="TextColor" Value="LimeGreen"/>
+            <Setter Property="BorderColor" Value="LimeGreen"/>
+        </Style>
     </Application.Resources>
 </Application>

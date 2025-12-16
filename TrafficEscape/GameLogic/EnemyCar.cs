@@ -3,10 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace TrafficEscape.GameLogic
+using TrafficEscape.Models;
+public class EnemyCar
 {
-    internal class EnemyCar
+    public Obstacle Model { get; }
+
+    public EnemyCar(Obstacle obstacle)
     {
+        Model = obstacle;
+    }
+
+    public void Update(double speed)
+    {
+        Model.Y += speed;
     }
 }

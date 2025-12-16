@@ -1,0 +1,34 @@
+<ContentPage
+    x:Class="TrafficEscape.Pages.ShopPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Shop"
+    BackgroundColor="Black">
+
+    <VerticalStackLayout
+        Padding="20"
+        Spacing="20"
+        VerticalOptions="Center"
+        HorizontalOptions="Center">
+
+        <Label
+            Text="Shop"
+            FontSize="32"
+            TextColor="White"
+            HorizontalOptions="Center" />
+
+        <Label
+            Text="Coming Soon!"
+            FontSize="18"
+            TextColor="Gray"
+            HorizontalOptions="Center" />
+
+        <Button
+            Text="Back"
+            FontSize="18"
+            BackgroundColor="#3498db"
+            TextColor="White"
+            Clicked="OnBack" />
+
+    </VerticalStackLayout>
+</ContentPage>

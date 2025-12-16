@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+namespace TrafficEscape.Services;
 
-namespace TrafficEscape.Services
-{
     internal class SoundService
     {
+        public static void PlayClick()
+        {
+          
+        }
     }
-}
+

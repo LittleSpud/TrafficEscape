@@ -10,7 +10,7 @@ namespace TrafficEscape.Models;
     {
         public double DifficultyLevel { get; private set; } = 1.0;
         public double ObstacleSpeed => Math.Max(600 - (DifficultyLevel * 50), 150);
-        public oduble PickupChance => Math.Min(DifficultyLevel * 0.05, 0.30);
+        public double PickupChance => Math.Min(DifficultyLevel * 0.05, 0.30);
 
         public void IncreaseDifficulty()
         {

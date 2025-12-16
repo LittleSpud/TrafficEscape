@@ -4,27 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TrafficEscape.ViewModels;
+using TrafficEscape.Services;
 
-namespace TrafficEscape.Pages
+namespace TrafficEscape.Pages;
+
+public partial class MainMenuPage : ContentPage
 {
-    public partial class MainMenuPage : ContentPage
+    public MainMenuPage()
     {
-        public MainMenuPage()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        BindingContext = new MainMenuViewModel();
+    }
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
 
-        async void StartGame(object sender, EventArgs e)
-            => await Navigation.PushAsync(new GamePage());
+        // Title fade-in
+        await TitleLabel.FadeTo(1, 1200, Easing.CubicOut);
 
-        async void OpenShop(object sender, EventArgs e)
-            => await Navigation.PushAsync(new ShopPage());
+    }
+    private async void OnButtonPressed(object sender, EventArgs e)
+    {
+        if (sender is not Button btn) return;
 
-        async void HighScores(object sender, EventArgs e)
-            => await Navigation.PushAsync(new HighScoresPage());
+        SoundService.PlayClick();
 
-        async void OpenSettings(object sender, EventArgs e)
-            => await Navigation.PushAsync(new SettingsPage());
-
+        await btn.ScaleTo(0.9, 80);
+        await btn.ScaleTo(1.0, 80);
     }
 }

@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TrafficEscape.Pages;
 
-namespace TrafficEscape.Pages
+public partial class PausePage : ContentPage
 {
-    internal class PausePage
+    public PausePage()
     {
+        InitializeComponent();
+    }
+
+    private async void OnResume(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
+    private async void OnQuit(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//MainMenuPage");
     }
 }

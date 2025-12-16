@@ -3,65 +3,65 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:TrafficEscape.ViewModels"
              Title="Traffic Escape">
-	<ContentPage.BindingContext>
-		<vm:MainMenuViewModel />
-	</ContentPage.BindingContext>
+    <!--View Model-->
+    <ContentPage.BindingContext>
+        <vm:MainMenuViewModel />
+    </ContentPage.BindingContext>
 
-	<Grid Padding="30">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="2*" />
-			<RowDefinition Height="3*" />
-		</Grid.RowDefinitions>
+    <Grid Padding="30">
 
-		<!-- GAME TITLE -->
-		<VerticalStackLayout Grid.Row="0"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center">
-			<Label Text="TRAFFIC ESCAPE"
+        <Image Source="menu_background.jpg"
+           Aspect="AspectFill"
+           Opacity="0.85" />
+
+        <BoxView Color="#80000000" />
+
+        <VerticalStackLayout
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Spacing="30">
+
+            <!-- Title -->
+            <Label x:Name="TitleLabel"
+                   Text="TRAFFIC ESCAPE"
                    FontSize="36"
                    TextColor="White"
-                   HorizontalOptions="Center">
-				<Label.Triggers>
-					<EventTrigger Event="Loaded">
-						<BeginAnimation TargetProperty="Opacity"
-                                        Duration="1500"
-                                        From="0"
-                                        To="1" />
-					</EventTrigger>
-				</Label.Triggers>
-			</Label>
-		</VerticalStackLayout>
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
 
-		<!-- BUTTONS -->
-		<VerticalStackLayout Grid.Row="1"
-                             Spacing="20"
-                             VerticalOptions="Center">
-
-			<Button Text="PLAY"
+            <!-- Start button -->
+            <Button Text="START"
                     FontSize="22"
-                    BackgroundColor="#2c3e50"
-                    TextColor="White"
+                    TextColor="Red"
+                    BorderColor="Red"
+                    BorderWidth="3"
+                    BackgroundColor="Transparent"
+                    WidthRequest="220"
+                    HeightRequest="60"
                     Command="{Binding PlayCommand}" />
 
-			<Button Text="SETTINGS"
+            <!-- Shop Button -->
+            <Button Text="SHOP"
                     FontSize="22"
-                    BackgroundColor="#34495e"
-                    TextColor="White"
-                    Command="{Binding SettingsCommand}" />
-
-			<Button Text="SHOP"
-                    FontSize="22"
-                    BackgroundColor="#16a085"
-                    TextColor="White"
+                    TextColor="DodgerBlue"
+                    BorderColor="DodgerBlue"
+                    BorderWidth="3"
+                    BackgroundColor="Transparent"
+                    WidthRequest="220"
+                    HeightRequest="60"
                     Command="{Binding ShopCommand}" />
 
-			<Button Text="QUIT"
+            <!-- Settings button -->
+            <Button Text="SETTINGS"
                     FontSize="22"
-                    BackgroundColor="#c0392b"
-                    TextColor="White"
-                    Command="{Binding QuitCommand}" />
+                    TextColor="LimeGreen"
+                    BorderColor="LimeGreen"
+                    BorderWidth="3"
+                    BackgroundColor="Transparent"
+                    WidthRequest="220"
+                    HeightRequest="60"
+                    Command="{Binding SettingsCommand}" />
 
-		</VerticalStackLayout>
-	</Grid>
-
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
