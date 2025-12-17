@@ -43,8 +43,8 @@
             <!-- Shop Button -->
             <Button Text="SHOP"
                     FontSize="22"
-                    TextColor="DodgerBlue"
-                    BorderColor="DodgerBlue"
+                    TextColor="MidnightBlue"
+                    BorderColor="MidnightBlue"
                     BorderWidth="3"
                     BackgroundColor="Transparent"
                     WidthRequest="220"
@@ -61,6 +61,16 @@
                     WidthRequest="220"
                     HeightRequest="60"
                     Command="{Binding SettingsCommand}" />
+            <!--Quit Button-->
+            <Button Text="QUIT"
+                    FontSize="22"
+                    TextColor="MediumPurple"
+                    BorderColor="MediumPurple"
+                    BorderWidth="3"
+                    BackgroundColor="Transparent"
+                    WidthRequest="220"
+                    HeightRequest="60"
+                    Command="{Binding QuitCommand}"/>
 
         </VerticalStackLayout>
     </Grid>

@@ -20,7 +20,36 @@ public partial class GamePage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        Loaded += OnPageLoaded;
+        SizeChanged += OnPageSized;
+    }
+    private async void OnPageSized(object? sender, EventArgs e)
+    {
+        SizeChanged -= OnPageSized;
+        await Task.Delay(50);
+
+        laneManager.CalculateLanePositions(LaneGrid.Width);
+        playerCar.CurrentLane = 1;
+        PositionPlayerCar();
+
+        gameLoop = new GameLoop(Dispatcher, UpdateGame);
+        gameLoop.Start();
+    }
+    private void PositionPlayerCar()
+    {
+        const double carWidth = 80;
+        const double carHeight = 160;
+
+        double x = laneManager.LanePositions[playerCar.CurrentLane];
+
+        AbsoluteLayout.SetLayoutBounds(
+        PlayerCarView,
+        new Rect(
+            x - carWidth / 2,
+            Height * 0.75,
+            carWidth,
+            carHeight
+        )
+    );
     }
     private async void OnPageLoaded(object? sender, EventArgs e)
     {
@@ -43,20 +72,6 @@ public partial class GamePage : ContentPage
     {
         score += update * 10;
         ScoreLabel.Text = ((int)score).ToString();
-    }
-    private void PositionPlayerCar()
-    {
-        double x = laneManager.LanePositions[playerCar.CurrentLane];
-
-        AbsoluteLayout.SetLayoutBounds(
-            PlayerCarView,
-            new Rect(
-                x - PlayerCarView.Width / 2,
-                Height * 0.75,
-                PlayerCarView.Width,
-                PlayerCarView.Height
-            )
-        );
     }
     private async void MoveLeft()
     {

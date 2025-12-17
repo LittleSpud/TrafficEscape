@@ -23,6 +23,15 @@ public partial class MainMenuPage : ContentPage
         await TitleLabel.FadeTo(1, 1200, Easing.CubicOut);
 
     }
+    private async void OnButtonPressed(object sender, EventArgs e)
+    {
+        if (sender is not Button btn) return;
+
+        SoundService.PlayClick();
+
+        await btn.ScaleTo(0.9, 80);
+        await btn.ScaleTo(1.0, 80);
+    }
     private async void OnStart(object sender, EventArgs e)
     {
         SoundService.PlayClick();
@@ -38,13 +47,5 @@ public partial class MainMenuPage : ContentPage
         SoundService.PlayClick();
         await Shell.Current.GoToAsync(nameof(ShopPage));
     }
-    private async void OnButtonPressed(object sender, EventArgs e)
-    {
-        if (sender is not Button btn) return;
-
-        SoundService.PlayClick();
-
-        await btn.ScaleTo(0.9, 80);
-        await btn.ScaleTo(1.0, 80);
-    }
+    
 }

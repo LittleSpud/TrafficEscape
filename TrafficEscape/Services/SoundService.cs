@@ -1,6 +1,5 @@
-﻿
+﻿using Plugin.Maui.Audio;
 using Microsoft.Maui.Storage;
-using Plugin.Maui.Audio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +9,29 @@ namespace TrafficEscape.Services;
 
     public static class SoundService
     {
-        //private static IAudioManager? audioManager;
+     
         private static IAudioPlayer? clickPlayer;
+        private static bool clicked;
 
-        public static async Task InitAsync(IAudioManager manager)
+        public static async Task InitAsync(IAudioManager audioManager)
         {
-            var stream = await FileSystem.OpenAppPackageFileAsync("click.wav");
-            clickPlayer = manager.CreatePlayer(stream);
+            if (clicked) return;
+
+            try
+            {
+                var stream = await FileSystem.OpenAppPackageFileAsync("click.wav");
+                clickPlayer = audioManager.CreatePlayer(stream);
+                clicked = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Audio init failed: {ex}");
+            }
         }
+
         public static void PlayClick()
         {
-            if (clickPlayer == null)
+            if (clicked || clickPlayer == null)
                 return;
 
             clickPlayer?.Stop();

@@ -1,9 +1,9 @@
-﻿using Microsoft.Maui;
+﻿using Plugin.Maui.Audio;
+using Microsoft.Maui;
 using Microsoft.Extensions.Logging;
 using TrafficEscape.Services;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
-using Plugin.Maui.Audio;
 
 namespace TrafficEscape
 {

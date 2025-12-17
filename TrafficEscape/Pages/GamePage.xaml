@@ -22,6 +22,25 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All" />
 
+        <!-- obstacles -->
+        <AbsoluteLayout x:Name="ObstacleLayer"
+                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                 AbsoluteLayout.LayoutFlags="All" />
+
+        <!-- pickups -->
+        <AbsoluteLayout x:Name="PickupLayer"
+                 AbsoluteLayout.LayoutBounds="0,0,1,1"
+                 AbsoluteLayout.LayoutFlags="All" />
+
+        <!-- player car -->
+        <Image x:Name="PlayerCarView"
+               Source="car_default.png"
+               WidthRequest="80"
+               HeightRequest="160"        
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,40" />
+
         <!-- lane grid -->
         <Grid x:Name="LaneGrid"
               AbsoluteLayout.LayoutBounds="0,0,1,1"
@@ -37,25 +56,6 @@
             <Grid Grid.Column="1" BackgroundColor="Transparent" />
             <Grid Grid.Column="2" BackgroundColor="Transparent" />
         </Grid>
-
-        <!-- obstacles -->
-        <AbsoluteLayout x:Name="ObstacleLayer"
-                        AbsoluteLayout.LayoutBounds="0,0,1,1"
-                        AbsoluteLayout.LayoutFlags="All" />
-
-        <!-- pickups -->
-        <AbsoluteLayout x:Name="PickupLayer"
-                        AbsoluteLayout.LayoutBounds="0,0,1,1"
-                        AbsoluteLayout.LayoutFlags="All" />
-
-        <!-- player car -->
-        <Image x:Name="PlayerCarView"
-               Source="car_default.png"
-               WidthRequest="80"
-               HeightRequest="160"
-               AbsoluteLayout.LayoutBounds="0.5,0.8,80,160"
-               AbsoluteLayout.LayoutFlags="PositionProportional" />
-
         <!-- HUD -->
         <Grid Padding="15"
               AbsoluteLayout.LayoutBounds="0,0,1,0.2"

@@ -1,7 +1,7 @@
-﻿using Microsoft.Maui.Controls;
+﻿using Plugin.Maui.Audio;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui;
-using Plugin.Maui.Audio;
 using TrafficEscape.Services;
 namespace TrafficEscape;
 
@@ -10,7 +10,11 @@ namespace TrafficEscape;
         public App(IAudioManager audioManager)
         {
             InitializeComponent();
-        _ = SoundService.InitAsync(audioManager);
+
+            Task.Run(async () =>
+            {
+                await SoundService.InitAsync(audioManager);
+            });
 
         // Apply saved theme
         App.Current.UserAppTheme =
