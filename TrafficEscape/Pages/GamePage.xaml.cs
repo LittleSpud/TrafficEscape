@@ -36,37 +36,38 @@ public partial class GamePage : ContentPage
     }
     private void PositionPlayerCar()
     {
-        const double carWidth = 80;
-        const double carHeight = 160;
 
         double x = laneManager.LanePositions[playerCar.CurrentLane];
 
         AbsoluteLayout.SetLayoutBounds(
         PlayerCarView,
         new Rect(
-            x - carWidth / 2,
+            x - PlayerCarView.Width / 2,
             Height * 0.75,
-            carWidth,
-            carHeight
-        )
-    );
+            PlayerCarView.Width,
+            PlayerCarView.Height
+            )
+        );
+
+        PlayerCarView.TranslationX = 0;
+        PlayerCarView.TranslationY = 0;
     }
     private async void OnPageLoaded(object? sender, EventArgs e)
     {
         Loaded -= OnPageLoaded;
         await Task.Delay(50);
-        PlayerCarView.BackgroundColor = Colors.Red;
 
         if (LaneGrid == null || PlayerCarView == null)
             return;
         Console.WriteLine("GamePage Loaded");
 
-        laneManager.CalculateLanePositions(LaneGrid.Width);
+        laneManager.CalculateLanePositions(Width);
         playerCar.CurrentLane = 1;
         PositionPlayerCar();
 
         gameLoop = new GameLoop(Dispatcher, UpdateGame);
         gameLoop.Start();
+
     }
     private void UpdateGame(double update)
     {
@@ -76,15 +77,16 @@ public partial class GamePage : ContentPage
     private async void MoveLeft()
     {
         if (isMoving || playerCar.CurrentLane <= 0) return;
+       
         playerCar.CurrentLane--;
-        await AnimateCarToLane(playerCar.CurrentLane);
+        PositionPlayerCar();
     }
 
     private async void MoveRight()
     {
         if (isMoving || playerCar.CurrentLane >= 2) return;
         playerCar.CurrentLane++;
-        await AnimateCarToLane(playerCar.CurrentLane);
+        PositionPlayerCar();
     }
 
     private async Task AnimateCarToLane(int lane)
@@ -94,14 +96,19 @@ public partial class GamePage : ContentPage
         double targetX =
             laneManager.LanePositions[lane] - (PlayerCarView.Width / 2);
 
+        double currentX = PlayerCarView.X;
+
+        double updatedX = targetX - currentX;
+
         await PlayerCarView.TranslateTo(
-            targetX - PlayerCarView.X,
+            updatedX - PlayerCarView.X,
             0,
             150,
             Easing.CubicOut
         );
 
         PositionPlayerCar();
+
         isMoving = false;
     }
     private void OnLeftTapped(object sender, TappedEventArgs e) => MoveLeft();
