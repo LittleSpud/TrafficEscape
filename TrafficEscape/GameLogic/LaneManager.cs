@@ -10,15 +10,12 @@ public class LaneManager
 {
     public double[] LanePositions { get; } = new double[3];
 
-    public void CalculateLanePositions(double width)
+    public void CalculateLanePositions(double roadWidth)
     {
-        if (width <= 0)
-            return;
+        double laneWidth = roadWidth / 3;
 
-        double laneWidth = width / 3;
-
-        LanePositions[0] = laneWidth * 0.5;
+        LanePositions[0] = laneWidth * 0.95;
         LanePositions[1] = laneWidth * 1.5;
-        LanePositions[2] = laneWidth * 2.5;
+        LanePositions[2] = laneWidth * 2.1;
     }
 }

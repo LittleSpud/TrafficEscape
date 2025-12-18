@@ -9,10 +9,9 @@ namespace TrafficEscape.GameLogic;
 
 public class PickupCoin
 {
-    public Pickup Model { get; }
+    public int Lane { get; set; }
+    public double Y { get; set; }
+    public double Speed { get; set; }
+    public Image View { get; set; } = null!;
 
-    public PickupCoin(Pickup pickup)
-    {
-        Model = pickup;
-    }
 }

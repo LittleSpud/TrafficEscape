@@ -1,8 +1,12 @@
-﻿using System;
+﻿namespace TrafficEscape.Services;
 
-public class Class1
+public class DifficultyService
 {
-	public Class1()
-	{
-	}
+    public double SpeedMultiplier { get; private set; } = 0.1;
+
+    public void IncreaseDifficulty()
+    {
+        SpeedMultiplier += 0.5;
+    }
 }
+

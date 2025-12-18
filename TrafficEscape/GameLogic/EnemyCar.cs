@@ -12,5 +12,5 @@ public class EnemyCar
     public int Lane { get; set; }
     public double Y { get; set; }
     public double Speed { get; set; }
-    public Image Sprite { get; set; } = null!;
+    public Image View { get; set; } = null!;
 }
