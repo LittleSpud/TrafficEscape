@@ -2,7 +2,6 @@
 using Microsoft.Maui.Graphics;
 using TrafficEscape.GameLogic;
 using TrafficEscape.Services;
-using TrafficEscape.Models;
 namespace TrafficEscape.Pages;
 
 public partial class GamePage : ContentPage
@@ -15,17 +14,17 @@ public partial class GamePage : ContentPage
     private readonly List<PickupCoin> pickups = new();
 
     private GameLoop? gameLoop;
-    private Spawner? spawner;
 
     private bool isMoving;
-
     private double score;
+
+    private Spawner? spawner;
     private double spawnTimer;
     private double difficultyTimer;
 
-    private const double ScoreRate = 0.6;
+    private const double ScoreRate = 0.2;
     private double spawnInterval = 4.0;
-    private const double LerpSpeed = 15.0;
+    private const double MinSpawnInterval = 1.5;
 
     private const int MaxEnemies = 3;
     private const int MaxPickups = 2;
@@ -47,8 +46,13 @@ public partial class GamePage : ContentPage
         await Task.Delay(50);
 
         laneManager.CalculateLanePositions(LaneGrid.Width);
+
         playerCar.CurrentLane = 1;
         PositionPlayerCar();
+
+        PlayerCarView.Source = SkinService.EquippedSkin;
+
+        spawner = new Spawner(difficulty);
 
         gameLoop = new GameLoop(Dispatcher, UpdateGame);
         gameLoop.Start();
@@ -58,22 +62,18 @@ public partial class GamePage : ContentPage
 
         double x = laneManager.LanePositions[playerCar.CurrentLane];
 
-        PlayerCarView.TranslationX = playerCar.X;
-        PlayerCarView.TranslationY = playerCar.Y;
-
         AbsoluteLayout.SetLayoutBounds(
         PlayerCarView,
         new Rect(
             x - PlayerCarView.Width / 2,
             Height * 0.75,
-            PlayerCarView.Width,
-            PlayerCarView.Height
+            PlayerCarView.WidthRequest,
+            PlayerCarView.HeightRequest
             )
         );
     }
     private void UpdateGame(double update)
     {
-        if (spawner == null || gameLoop == null) return;
         //score
         score += update * ScoreRate;
 
@@ -105,7 +105,6 @@ public partial class GamePage : ContentPage
     }
     private void SpawnRandom()
     {
-        if (spawner == null) return;
         var blockedLanes = new HashSet<int>();
 
         foreach (var e in enemies)
@@ -125,7 +124,9 @@ public partial class GamePage : ContentPage
 
         int lane = availableLanes[Random.Shared.Next(availableLanes.Count)];
 
-        if (Random.Shared.NextDouble() < 0.2 && pickups.Count < MaxPickups)
+        double roll = Random.Shared.NextDouble();
+
+        if (roll < difficulty.PickupChance && pickups.Count < MaxPickups)
         {
             SpawnPickup(lane);
         }
@@ -136,7 +137,8 @@ public partial class GamePage : ContentPage
     }
     private void SpawnEnemy(int lane)
     {
-        if (spawner == null) return;
+        if (spawner is null)
+            throw new InvalidOperationException("Spawner is not initialized.");
 
         var enemy = spawner.CreateEnemy(lane);
 
@@ -144,11 +146,8 @@ public partial class GamePage : ContentPage
         {
             Source = "obstacle.png",
             WidthRequest = 80,
-            HeightRequest = 160,
-            TranslationX = laneManager.GetLaneX(lane),
-            TranslationY = -200
+            HeightRequest = 160
         };
-        enemy.Y = -200;
         enemies.Add(enemy);
 
         ObstacleLayer.Children.Add(enemy.View);
@@ -165,6 +164,7 @@ public partial class GamePage : ContentPage
 
             if (CheckCollision(e.View))
             {
+                SoundService.PlayCollision();
                 GameOver();
                 return;
             }
@@ -178,7 +178,9 @@ public partial class GamePage : ContentPage
     }
     private void SpawnPickup(int lane)
     {
-        if (spawner == null) return;
+        if (spawner is null)
+            throw new InvalidOperationException("Spawner is not initialized.");
+
         var coin = spawner.CreatePickup(lane);
 
         coin.View = new Image
@@ -197,7 +199,7 @@ public partial class GamePage : ContentPage
         {
             var p = pickups[i];
             double cappedMultiplier = Math.Min(difficulty.SpeedMultiplier, 0.5);
-            p.Y += p.Speed * delta * cappedMultiplier;
+            p.Y += (p.Speed * 0.5) * delta * cappedMultiplier;
 
             PositionInLane(p.View, p.Lane, p.Y);
 
@@ -247,23 +249,26 @@ public partial class GamePage : ContentPage
 
         return lanes;
     }
-    private bool CheckCollision(View otherView)
+    private bool CheckCollision(View other)
     {
+        double playerX = PlayerCarView.X + PlayerCarView.TranslationX;
+        double playerY = PlayerCarView.Y + PlayerCarView.TranslationY;
 
+        //hitbox shrinks so there is no unfair collision
         double paddingX = 15;
         double paddingY = 20;
 
         Rect playerRect = new Rect(
-        PlayerCarView.TranslationX + paddingX,
-        PlayerCarView.TranslationY + paddingY,
+        playerX + paddingX,
+        playerY + paddingY,
         PlayerCarView.Width - (paddingX * 2),
         PlayerCarView.Height - (paddingY * 2));
 
         Rect otherRect = new Rect(
-            otherView.TranslationX + paddingX,
-            otherView.TranslationY + paddingY,
-            otherView.WidthRequest - (paddingX * 2),
-            otherView.HeightRequest - (paddingY * 2));
+            other.X + paddingX,
+            other.Y + paddingY,
+            other.WidthRequest - (paddingX * 2),
+            other.HeightRequest - (paddingY * 2));
 
         return playerRect.IntersectsWith(otherRect);
     }
@@ -327,9 +332,7 @@ public partial class GamePage : ContentPage
         gameLoop?.Stop();
 
         SaveService.Coins += sessionCoins;
-
-        SaveService.HighScore =
-            Math.Max(SaveService.HighScore, (int)score);
+        SaveService.HighScore = Math.Max(SaveService.HighScore, (int)score);
 
         await DisplayAlert("Game Over", $"Score: {(int)score}\nCoins: {sessionCoins}", "OK");
         await Shell.Current.GoToAsync("..");

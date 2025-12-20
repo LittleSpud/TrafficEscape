@@ -11,18 +11,23 @@ namespace TrafficEscape.Services;
     {
      
         private static IAudioPlayer? clickPlayer;
-        private static bool clicked;
+    private static IAudioPlayer? collisionPlayer;
+        private static bool initialised;
 
         public static async Task InitAsync(IAudioManager audioManager)
         {
-            if (clicked) return;
+            if (initialised) return;
 
             try
             {
-                var stream = await FileSystem.OpenAppPackageFileAsync("click.wav");
-                clickPlayer = audioManager.CreatePlayer(stream);
-                clicked = true;
-            }
+                var clickStream = await FileSystem.OpenAppPackageFileAsync("click.wav");
+                clickPlayer = audioManager.CreatePlayer(clickStream);
+
+                var crashStream = await FileSystem.OpenAppPackageFileAsync("collision.wav");
+                collisionPlayer = audioManager.CreatePlayer(crashStream);
+
+                initialised = true;
+        }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Audio init failed: {ex}");
@@ -38,5 +43,14 @@ namespace TrafficEscape.Services;
 
             clickPlayer?.Play();
         }
-    }
+        public static void PlayCollision()
+        {
+            if(collisionPlayer == null) 
+               return;
+            if(collisionPlayer.IsPlaying)
+               collisionPlayer.Stop();
+
+            collisionPlayer?.Play();
+        }
+}
 

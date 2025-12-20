@@ -16,9 +16,12 @@ namespace TrafficEscape;
                 await SoundService.InitAsync(audioManager);
             });
 
-        // Apply saved theme
-        App.Current.UserAppTheme =
-                GameSettings.UserDarkMode ? AppTheme.Dark : AppTheme.Light;
+            // Apply saved theme
+            if (App.Current != null)
+            {
+                App.Current.UserAppTheme =
+                    GameSettings.UserDarkMode ? AppTheme.Dark : AppTheme.Light;
+            }
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

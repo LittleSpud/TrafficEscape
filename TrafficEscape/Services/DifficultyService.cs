@@ -2,7 +2,7 @@
 
 public class DifficultyService
 {
-    public double SpeedMultiplier { get; private set; } = 1.0;
+    public double SpeedMultiplier { get; private set; } = 0.7;
     public double PickupChance { get; private set; } = 0.10;
 
     public void IncreaseDifficulty()

@@ -18,28 +18,36 @@
 		<CollectionView Grid.Row="1" x:Name="SkinsCollection" Margin="0,20">
 			<CollectionView.ItemTemplate>
 				<DataTemplate>
-					<Frame BackgroundColor="#1a1a1a" BorderColor="Gray" Margin="0,5" Padding="10">
-						<HorizontalStackLayout Spacing="20">
-							<Image Source="{Binding .}" WidthRequest="60" HeightRequest="100" />
-							<VerticalStackLayout VerticalOptions="Center" Spacing="5">
-								<Button x:Name="ActionBtn"
-										WidthRequest="120"
-										Clicked="OnSkinActionClicked"
-										Loaded="OnButtonLoaded"
-										CommandParameter="{Binding .}"
-										BackgroundColor="#3498db"
-										Text="BUY (50)">
-									<Button.Triggers>
-										<DataTrigger TargetType="Button" Binding="{Binding Source={RelativeSource Self}, Path=Text}" Value="OWNED">
-											<Setter Property="BackgroundColor" Value="#2ecc71" />
-											<Setter Property="TextColor" Value="White" />
-										</DataTrigger>
-									</Button.Triggers>
-								</Button>
-							</VerticalStackLayout>
-						</HorizontalStackLayout>
-					</Frame>
-				</DataTemplate>
+                    <Border BackgroundColor="#1a1a1a" 
+                            Stroke="Gray" 
+                            StrokeThickness="1"
+                            Margin="0,5" 
+                            Padding="10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5" />
+                        </Border.StrokeShape>
+
+                        <HorizontalStackLayout Spacing="20">
+                            <Image Source="{Binding .}" WidthRequest="60" HeightRequest="100" />
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="5">
+                                <Button x:Name="ActionBtn"
+                                        WidthRequest="120"
+                                        Clicked="OnSkinActionClicked"
+                                        Loaded="OnButtonLoaded"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#3498db"
+                                        Text="BUY (50)">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button" Binding="{Binding Source={RelativeSource Self}, Path=Text}" Value="OWNED">
+                                            <Setter Property="BackgroundColor" Value="#2ecc71" />
+                                            <Setter Property="TextColor" Value="White" />
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                    </Border>
+                </DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>
 
