@@ -18,12 +18,17 @@ public partial class MainMenuPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        //display/store highscore
+        int high = Preferences.Default.Get("HighScore", 0);
+        BestScoreLabel.Text = high.ToString();
 
         //update total coin from save service
         TotalCoinLabel.Text = SaveService.Coins.ToString();
 
         // Title fade-in
         await TitleLabel.FadeTo(1, 1200, Easing.CubicOut);
+        //menu music
+        SoundService.PlayMusic();
 
     }
     private async void OnButtonPressed(object sender, EventArgs e)
@@ -49,6 +54,11 @@ public partial class MainMenuPage : ContentPage
     {
         SoundService.PlayClick();
         await Shell.Current.GoToAsync(nameof(GaragePage));
+    }
+    private async void OnQuit(object sender, EventArgs e)
+    {
+        SoundService.PlayClick();
+        await Shell.Current.GoToAsync("..");
     }
     private async void OnShop(object sender, EventArgs e)
     {

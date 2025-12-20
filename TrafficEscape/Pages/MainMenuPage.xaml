@@ -28,6 +28,16 @@
                        TextColor="Gold" 
                        FontSize="20" 
                        FontAttributes="Bold"/>
+                
+                <Label Text="BEST SCORE:" 
+                       TextColor="Coral" 
+                       FontSize="20" 
+                       FontAttributes="Bold" />
+                <Label x:Name="BestScoreLabel" 
+                       Text="0" 
+                       TextColor="Gold" 
+                       FontSize="20" 
+                       FontAttributes="Bold" />
             </HorizontalStackLayout>
 
             <!-- Title -->

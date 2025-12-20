@@ -51,7 +51,10 @@
 			</CollectionView.ItemTemplate>
 		</CollectionView>
 
-		<Button Grid.Row="2" Text="BACK" Clicked="OnBack" BackgroundColor="#3498db" />
+		<Button Grid.Row="2" 
+                Text="BACK" 
+                Clicked="OnBack" 
+                BackgroundColor="#3498db" />
 	</Grid>
 	
 </ContentPage>

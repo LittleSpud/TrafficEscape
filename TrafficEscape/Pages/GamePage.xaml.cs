@@ -39,10 +39,12 @@ public partial class GamePage : ContentPage
     {
         base.OnAppearing();
         SizeChanged += OnPageSized;
+        SoundService.StopMusic();
     }
     private async void OnPageSized(object? sender, EventArgs e)
     {
         SizeChanged -= OnPageSized;
+        SoundService.StopMusic();
         await Task.Delay(50);
 
         laneManager.CalculateLanePositions(LaneGrid.Width);
@@ -57,6 +59,77 @@ public partial class GamePage : ContentPage
         gameLoop = new GameLoop(Dispatcher, UpdateGame);
         gameLoop.Start();
     }
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        SoundService.PlayMusic();
+    }
+    private void OnPause(object sender, EventArgs e)
+    {
+        gameLoop?.Stop();
+        PauseOverlay.IsVisible = true;
+    }
+    private async void OnSettings(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(SettingsPage));
+    }
+    private void OnResume(object sender, EventArgs e)
+    {
+        PauseOverlay.IsVisible = false;
+        SoundService.StopMusic();
+        gameLoop?.Start();
+    }
+    private async void OnMenu(object sender, EventArgs e)
+    {
+        bool confirm = await DisplayAlert("Quit", "Are you sure you want to quit? All progress will be reset!", "Yes", "No");
+        if (confirm)
+        {
+            gameLoop?.Stop();
+            await Shell.Current.GoToAsync("..");
+        }
+    }
+    private async void OnQuitToMenu(object sender, EventArgs e)
+    {
+        SoundService.PlayClick();
+        await Shell.Current.GoToAsync("..");
+    }
+
+    //player clicks "TRY AGAIN"
+    private void OnRestart(object sender, EventArgs e)
+    {
+        SoundService.PlayClick();
+        GameOverOverlay.IsVisible = false;
+        ResetGame();
+    }
+    private void ResetGame()
+    {
+        score = 0;
+        sessionCoins = 0;
+        spawnTimer = 0;
+        difficultyTimer = 0;
+        spawnInterval = 4.0; 
+
+        ScoreLabel.Text = "0";
+        CoinLabel.Text = "0";
+
+        foreach (var enemy in enemies)
+        {
+            ObstacleLayer.Children.Remove(enemy.View);
+        }
+        enemies.Clear();
+
+        foreach (var coin in pickups)
+        {
+            PickupLayer.Children.Remove(coin.View);
+        }
+        pickups.Clear();
+
+        playerCar.CurrentLane = 1;
+        PositionPlayerCar();
+
+        gameLoop?.Start();
+    }
+
     private void PositionPlayerCar()
     {
 
@@ -164,6 +237,10 @@ public partial class GamePage : ContentPage
 
             if (CheckCollision(e.View))
             {
+                if (Preferences.Default.Get("VibrationEnabled", true))
+                {
+                    HapticFeedback.Default.Perform(HapticFeedbackType.LongPress);
+                }
                 SoundService.PlayCollision();
                 GameOver();
                 return;
@@ -205,6 +282,7 @@ public partial class GamePage : ContentPage
 
             if (CheckCollision(p.View))
             {
+                SoundService.PlayCoinSound();
                 sessionCoins++;
 
                 CoinLabel.Text = sessionCoins.ToString();
@@ -301,7 +379,13 @@ public partial class GamePage : ContentPage
     private async void MoveLeft()
     {
         if (isMoving || playerCar.CurrentLane <= 0) return;
-       
+
+        SoundService.PlayTireSound();
+        if (Preferences.Default.Get("VibrationEnabled", true))
+        {
+            HapticFeedback.Default.Perform(HapticFeedbackType.Click);
+        }
+
         playerCar.CurrentLane--;
         await AnimateCarToLane(playerCar.CurrentLane);
     }
@@ -309,6 +393,13 @@ public partial class GamePage : ContentPage
     private async void MoveRight()
     {
         if (isMoving || playerCar.CurrentLane >= 2) return;
+
+        SoundService.PlayTireSound();
+        if (Preferences.Default.Get("VibrationEnabled", true))
+        {
+            HapticFeedback.Default.Perform(HapticFeedbackType.Click);
+        }
+
         playerCar.CurrentLane++;
         await AnimateCarToLane(playerCar.CurrentLane);
     }
@@ -322,19 +413,22 @@ public partial class GamePage : ContentPage
     {
         MoveRight();
     }
-    private async void OnPause(object sender, EventArgs e)
-    {
-        gameLoop?.Stop();
-        await Shell.Current.GoToAsync(nameof(PausePage));
-    }
     private async void GameOver()
     {
         gameLoop?.Stop();
 
+        bool isNewRecord = (int)score > SaveService.HighScore;
+
+        GameOverCoinLabel.Text = sessionCoins.ToString();
+
         SaveService.Coins += sessionCoins;
         SaveService.HighScore = Math.Max(SaveService.HighScore, (int)score);
 
-        await DisplayAlert("Game Over", $"Score: {(int)score}\nCoins: {sessionCoins}", "OK");
-        await Shell.Current.GoToAsync("..");
+        FinalScoreLabel.Text = ((int)score).ToString();
+        GameOverHighScoreLabel.Text = SaveService.HighScore.ToString();
+
+        NewRecordLabel.IsVisible = isNewRecord;
+        GameOverOverlay.IsVisible = true;
+
     }
 }

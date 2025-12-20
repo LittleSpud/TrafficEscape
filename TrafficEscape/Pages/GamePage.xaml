@@ -24,22 +24,42 @@
 
         <!-- obstacles -->
         <AbsoluteLayout x:Name="ObstacleLayer"
-                 AbsoluteLayout.LayoutBounds="0,0,1,1"
-                 AbsoluteLayout.LayoutFlags="All" />
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        AbsoluteLayout.LayoutFlags="All" />
 
         <!-- pickups -->
         <AbsoluteLayout x:Name="PickupLayer"
-                 AbsoluteLayout.LayoutBounds="0,0,1,1"
-                 AbsoluteLayout.LayoutFlags="All" />
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        AbsoluteLayout.LayoutFlags="All" />
 
         <!-- player car -->
         <Image x:Name="PlayerCarView"
                Source="car_default.png"
-               WidthRequest="80"
-               HeightRequest="160"        
-               AbsoluteLayout.LayoutBounds="0,0,80,160"
-               AbsoluteLayout.LayoutFlags="None"/>
+               AbsoluteLayout.LayoutFlags="None">
+            
+            <Image.WidthRequest>
+                <OnPlatform x:TypeArguments="x:Double">
+                    <On Platform="Android" Value="60" />
+                    <On Platform="WinUI" Value="80" />
+                </OnPlatform>
+            </Image.WidthRequest>
+            
+            <Image.HeightRequest>
+                <OnPlatform x:TypeArguments="x:Double">
+                    <On Platform="Android" Value="120" />
+                    <On Platform="WinUI" Value="160" />
+                </OnPlatform>
+            </Image.HeightRequest>
 
+            <AbsoluteLayout.LayoutBounds>
+                <OnPlatform x:TypeArguments="Rect">
+                    <On Platform="Android" Value="0,0,60,120" />
+                    <On Platform="WinUI" Value="0,0,80,160" />
+                </OnPlatform>
+            </AbsoluteLayout.LayoutBounds>
+        </Image>
         <!-- lane grid -->
         <Grid x:Name="LaneGrid"
               AbsoluteLayout.LayoutBounds="0,0,1,1"
@@ -113,8 +133,146 @@
                     Direction="Right"
                     Swiped="OnRightSwipe" />
             </Grid.GestureRecognizers>
-
         </Grid>
+        <!--pAUSE MENU-->
+        <Border BackgroundColor="#222222"
+                Stroke="Gold"
+                StrokeThickness="3"
+                Padding="10,5"
+                WidthRequest="100"
+                HeightRequest="45"
+                HorizontalOptions="End"
+                AbsoluteLayout.LayoutBounds="0.99, 0.15, -1, -1"
+                AbsoluteLayout.LayoutFlags="PositionProportional">
 
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnPause" />
+            </Border.GestureRecognizers>
+
+            <Label Text="PAUSE" 
+                   TextColor="Orange" 
+                   FontAttributes="Bold" 
+                   FontSize="16"
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center" />
+        </Border>
+        <Grid x:Name="PauseOverlay" 
+              IsVisible="False"
+              BackgroundColor="#CC000000"
+              AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All">
+
+            <Border BackgroundColor="#1a1a1a" 
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" 
+                    Padding="30" WidthRequest="300">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="PAUSED" 
+                           FontSize="32" 
+                           TextColor="White" 
+                           HorizontalOptions="Center" />
+                    <Button Text="RESUME" 
+                            Clicked="OnResume" 
+                            BackgroundColor="#2ecc71" />
+                    <Button Text="SETTINGS" 
+                            Clicked="OnSettings" 
+                            BackgroundColor="#3498db" />
+                    <Button Text="MAIN MENU" 
+                            Clicked="OnMenu" 
+                            BackgroundColor="#e74c3c" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+        <Grid x:Name="GameOverOverlay" 
+              IsVisible="False" 
+              BackgroundColor="#CC000000" 
+              AbsoluteLayout.LayoutBounds="0,0,1,1" 
+              AbsoluteLayout.LayoutFlags="All">
+            <Border BackgroundColor="#1a1a1a" 
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" 
+                    Padding="30" 
+                    WidthRequest="300">
+                
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="GAME OVER" 
+                           FontSize="32" 
+                           FontAttributes="Bold" 
+                           TextColor="Red" 
+                           HorizontalOptions="Center" />
+
+                    <Label x:Name="NewRecordLabel"
+                           Text="NEW HIGH SCORE!" 
+                           IsVisible="False" 
+                           TextColor="Gold" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center" />
+
+                    <HorizontalStackLayout HorizontalOptions="Center" 
+                                           Spacing="10">
+                        <Label Text="SCORE:" 
+                               TextColor="White" 
+                               FontSize="20" />
+                        <Label x:Name="FinalScoreLabel" 
+                               Text="0" TextColor="Yellow"
+                               FontSize="20" 
+                               
+                               FontAttributes="Bold" />
+                    </HorizontalStackLayout>
+                    
+                    <HorizontalStackLayout HorizontalOptions="Center" 
+                                           Spacing="10">
+                        <Image Source="coin.png" 
+                               WidthRequest="20" 
+                               HeightRequest="20"
+                               VerticalOptions="Center"/>
+                        
+                        <Label Text="COINS COLLECTED:" 
+                               TextColor="White" 
+                               FontSize="18" 
+                               VerticalOptions="Center"/>
+                        
+                        <Label x:Name="GameOverCoinLabel" 
+                               Text="0" 
+                               TextColor="Gold" 
+                               FontSize="20" 
+                               FontAttributes="Bold" 
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" 
+                                           Spacing="10">
+                        <Label Text="BEST:" 
+                               TextColor="Gray" 
+                               FontSize="16" />
+                        <Label x:Name="GameOverHighScoreLabel" 
+                               Text="0" 
+                               TextColor="White" 
+                               FontSize="16" />
+                    </HorizontalStackLayout>
+
+                    <Button Text="TRY AGAIN" 
+                            Clicked="OnRestart" 
+                            BackgroundColor="#2ecc71" 
+                            Margin="0,10,0,0"/>
+                    <Button Text="MAIN MENU" 
+                            Clicked="OnQuitToMenu" 
+                            BackgroundColor="#e74c3c" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </AbsoluteLayout>
 </ContentPage>

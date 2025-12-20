@@ -2,22 +2,150 @@
     x:Class="TrafficEscape.Pages.SettingsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Settings">
+    Title="Settings"
+    BackgroundColor="Black">
 
-    <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid RowDefinitions="Auto, *, Auto" Padding="20">
 
         <Label Text="Settings"
                FontSize="28"
-               HorizontalOptions="Center"/>
+               TextColor="White"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               Margin="0,0,0,20"/>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="15">
+                <Border BackgroundColor="#1a1a1a" Padding="15" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="*, Auto">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="Vibration" 
+                                   TextColor="White" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold"/>
+                            <Label Text="Switch between Vibration On/Off" 
+                                   TextColor="Gray" 
+                                   FontSize="12"/>
+                        </VerticalStackLayout>
+                        <Switch x:Name="VibrationSwitch" 
+                                Grid.Column="1"
+                                OnColor="#3498db" 
+                                Toggled="OnVibrationToggled" />
+                    </Grid>
+                </Border>
 
-        <HorizontalStackLayout Spacing="15">
-            <Label Text="Dark Mode"
-                   VerticalOptions="Center"
-                   FontSize="18"/>
+                <Border BackgroundColor="#1a1a1a" Padding="15" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="*, Auto">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="Dark Mode" 
+                                   TextColor="White" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold"/>
+                            <Label Text="Switch between light and dark themes" 
+                                   TextColor="Gray" 
+                                   FontSize="12"/>
+                        </VerticalStackLayout>
 
-            <Switch x:Name="DarkModeSwitch"
-                    Toggled="OnDarkModeToggled"/>
-        </HorizontalStackLayout>
+                        <Switch x:Name="DarkModeSwitch" 
+                                Grid.Column="1"
+                                OnColor="#3498db" 
+                                Toggled="OnDarkModeToggled" />
+                    </Grid>
+                </Border>
+                
+                <Border BackgroundColor="#1a1a1a" Padding="15" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="Music Volume" TextColor="White" FontSize="18" VerticalOptions="Center"/>
+                            <Label x:Name="VolumeLabel" Text="50%" TextColor="Gray" VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
 
-    </VerticalStackLayout>
+                        <Slider x:Name="MusicVolumeSlider"
+                                Minimum="0"
+                                Maximum="1"
+                                MinimumTrackColor="#3498db"
+                                ThumbColor="#3498db"
+                                ValueChanged="OnVolumeChanged" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#1a1a1a" 
+                        Padding="15" 
+                        StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="10">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="SFX Volume" 
+                                   TextColor="White" 
+                                   FontSize="18" 
+                                   VerticalOptions="Center"/>
+                            <Label x:Name="SfxVolumeLabel" 
+                                   Text="50%" 
+                                   TextColor="Gray" 
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <Slider x:Name="SfxVolumeSlider"
+                                Minimum="0"
+                                Maximum="1"
+                                MinimumTrackColor="#3498db"
+                                ThumbColor="#3498db"
+                                ValueChanged="OnSfxVolumeChanged" />
+                    </VerticalStackLayout>
+                    
+                </Border>
+                
+            </VerticalStackLayout>
+            
+        </ScrollView>
+
+        <Border BackgroundColor="#2a1010" 
+                Padding="15" 
+                StrokeThickness="1" 
+                Stroke="Red" 
+                Margin="0,40,0,0">
+            
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout Spacing="10">
+                <Label Text="DANGER ZONE" 
+                       TextColor="Red" 
+                       FontAttributes="Bold" 
+                       FontSize="14" 
+                       HorizontalOptions="Center"/>
+
+                <Button Text="WIPE ALL PLAYER DATA" 
+                            Clicked="OnWipeDataClicked"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            BorderColor="Red"
+                            BorderWidth="1"
+                            HeightRequest="45"/>
+
+                <Label Text="This will reset all Settings, High Score, Coins, and Skins." 
+                           TextColor="Gray" 
+                           FontSize="11" 
+                           HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Border>
+
+        <Button Grid.Row="2"
+                Text="BACK"
+                Clicked="OnBackClicked" 
+                BackgroundColor="#3498db" />
+    </Grid>
+    
 </ContentPage>

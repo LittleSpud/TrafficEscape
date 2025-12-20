@@ -39,6 +39,10 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Grid.Row="2" Text="BACK" Clicked="OnBack" BackgroundColor="#34495e" CornerRadius="20"/>
+        <Button Grid.Row="2"
+                Text="BACK" 
+                Clicked="OnBack" 
+                BackgroundColor="#3498db" 
+                CornerRadius="20"/>
     </Grid>
 </ContentPage>
