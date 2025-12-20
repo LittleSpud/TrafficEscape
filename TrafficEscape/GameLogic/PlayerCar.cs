@@ -10,6 +10,14 @@ namespace TrafficEscape.GameLogic;
     public class PlayerCar
     {
         public int CurrentLane { get; set; } = 1;
-        public bool IsMoving { get; set; }
+        public View? View { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
+
+    public PlayerCar() { }
+    public PlayerCar(View view)
+    {
+            View = view;
+    }
 }
 

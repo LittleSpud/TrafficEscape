@@ -31,10 +31,11 @@ namespace TrafficEscape.Services;
 
         public static void PlayClick()
         {
-            if (clicked || clickPlayer == null)
+            if (clickPlayer == null)
                 return;
+            if (clickPlayer.IsPlaying)
+                clickPlayer.Stop();
 
-            clickPlayer?.Stop();
             clickPlayer?.Play();
         }
     }

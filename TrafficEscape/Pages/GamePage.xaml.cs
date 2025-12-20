@@ -2,28 +2,36 @@
 using Microsoft.Maui.Graphics;
 using TrafficEscape.GameLogic;
 using TrafficEscape.Services;
+using TrafficEscape.Models;
 namespace TrafficEscape.Pages;
 
 public partial class GamePage : ContentPage
 {
     private readonly PlayerCar playerCar = new();
     private readonly LaneManager laneManager = new();
+    private readonly DifficultyService difficulty = new();
 
     private readonly List<EnemyCar> enemies = new();
     private readonly List<PickupCoin> pickups = new();
-    private readonly DifficultyService difficulty = new();
 
     private GameLoop? gameLoop;
+    private Spawner? spawner;
 
     private bool isMoving;
+
     private double score;
-    private Spawner spawner;
     private double spawnTimer;
-    private const double ScoreRate = 1.5;
-    private double spawnInterval = 2.8;
+    private double difficultyTimer;
+
+    private const double ScoreRate = 0.6;
+    private double spawnInterval = 4.0;
+    private const double LerpSpeed = 15.0;
+
     private const int MaxEnemies = 3;
     private const int MaxPickups = 2;
-    private int lastSpawnLane = -1;
+
+    private int sessionCoins = 0;
+
     public GamePage()
     {
         InitializeComponent();
@@ -39,11 +47,8 @@ public partial class GamePage : ContentPage
         await Task.Delay(50);
 
         laneManager.CalculateLanePositions(LaneGrid.Width);
-
         playerCar.CurrentLane = 1;
         PositionPlayerCar();
-
-        spawner = new Spawner(difficulty);
 
         gameLoop = new GameLoop(Dispatcher, UpdateGame);
         gameLoop.Start();
@@ -52,6 +57,9 @@ public partial class GamePage : ContentPage
     {
 
         double x = laneManager.LanePositions[playerCar.CurrentLane];
+
+        PlayerCarView.TranslationX = playerCar.X;
+        PlayerCarView.TranslationY = playerCar.Y;
 
         AbsoluteLayout.SetLayoutBounds(
         PlayerCarView,
@@ -65,6 +73,21 @@ public partial class GamePage : ContentPage
     }
     private void UpdateGame(double update)
     {
+        if (spawner == null || gameLoop == null) return;
+        //score
+        score += update * ScoreRate;
+
+        ScoreLabel.Text = ((int)score).ToString();
+
+        //difficulty
+        difficultyTimer += update;
+
+        if (difficultyTimer >= 100)
+        {
+            difficultyTimer = 0;
+            difficulty.IncreaseDifficulty();
+        }
+
         //spawning
         spawnTimer += update;
 
@@ -75,76 +98,68 @@ public partial class GamePage : ContentPage
             SpawnRandom();
         }
 
-        //score
-        score += update * ScoreRate;
-        ScoreLabel.Text = ((int)score).ToString();
-
-        //difficulty scaling 
-        spawnInterval = Math.Max(1.2, spawnInterval - update * 0.002);
+        spawnInterval = Math.Max(3.5, spawnInterval - update * 0.005);
 
         UpdateEnemies(update);
         UpdatePickups(update);
     }
-    private bool IsLaneBlocked(int lane)
+    private void SpawnRandom()
     {
-        const double spawnBlockDistance = 300;
+        if (spawner == null) return;
+        var blockedLanes = new HashSet<int>();
 
         foreach (var e in enemies)
         {
-            if (e.Lane == lane && e.Y < spawnBlockDistance)
-                return true;
+            if (e.Y < 250)
+                blockedLanes.Add(e.Lane);
         }
-
-        return false;
-    }
-    private void SpawnRandom()
-    {
-        var freeLanes = new List<int>();
-
-        for (int lane = 0; lane < 3; lane++)
-        {
-            if (!IsLaneBlocked(lane))
-                freeLanes.Add(lane);
-        }
-
-        if (freeLanes.Count <= 1)
+        if (blockedLanes.Count >= 2)
             return;
 
-        int laneToUse = freeLanes[Random.Shared.Next(freeLanes.Count)];
+        var availableLanes = Enumerable.Range(0, 3)
+        .Where(l => !blockedLanes.Contains(l))
+        .ToList();
 
-        if (Random.Shared.NextDouble() < 0.65)
+        if (availableLanes.Count == 0)
+            return;
+
+        int lane = availableLanes[Random.Shared.Next(availableLanes.Count)];
+
+        if (Random.Shared.NextDouble() < 0.2 && pickups.Count < MaxPickups)
         {
-            if (enemies.Count < MaxEnemies)
-                SpawnEnemy(laneToUse);
+            SpawnPickup(lane);
         }
-        else
+        else if (enemies.Count < MaxEnemies)
         {
-            if (pickups.Count < MaxPickups)
-                SpawnPickup(laneToUse);
+            SpawnEnemy(lane);
         }
     }
     private void SpawnEnemy(int lane)
     {
+        if (spawner == null) return;
+
         var enemy = spawner.CreateEnemy(lane);
 
-        var img = new Image
+        enemy.View = new Image
         {
             Source = "obstacle.png",
             WidthRequest = 80,
-            HeightRequest = 160
+            HeightRequest = 160,
+            TranslationX = laneManager.GetLaneX(lane),
+            TranslationY = -200
         };
-
-        enemy.View = img;
+        enemy.Y = -200;
         enemies.Add(enemy);
 
-        ObstacleLayer.Children.Add(img);
+        ObstacleLayer.Children.Add(enemy.View);
     }
     private void UpdateEnemies(double delta)
     {
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             var e = enemies[i];
-            e.Y += e.Speed * delta;
+            double cappedMultiplier = Math.Min(difficulty.SpeedMultiplier, 0.5);
+            e.Y += e.Speed * delta * cappedMultiplier;
 
             PositionInLane(e.View, e.Lane, e.Y);
 
@@ -163,31 +178,35 @@ public partial class GamePage : ContentPage
     }
     private void SpawnPickup(int lane)
     {
+        if (spawner == null) return;
         var coin = spawner.CreatePickup(lane);
 
-        var img = new Image
+        coin.View = new Image
         {
             Source = "coin.png",
             WidthRequest = 50,
             HeightRequest = 50
         };
-
-        coin.View = img;
         pickups.Add(coin);
 
-        PickupLayer.Children.Add(img);
+        PickupLayer.Children.Add(coin.View);
     }
     private void UpdatePickups(double delta)
     {
         for (int i = pickups.Count - 1; i >= 0; i--)
         {
             var p = pickups[i];
-            p.Y += p.Speed * delta;
+            double cappedMultiplier = Math.Min(difficulty.SpeedMultiplier, 0.5);
+            p.Y += p.Speed * delta * cappedMultiplier;
 
             PositionInLane(p.View, p.Lane, p.Y);
 
             if (CheckCollision(p.View))
             {
+                sessionCoins++;
+
+                CoinLabel.Text = sessionCoins.ToString();
+
                 PickupLayer.Children.Remove(p.View);
                 pickups.RemoveAt(i);
                 continue;
@@ -215,9 +234,38 @@ public partial class GamePage : ContentPage
             )
         );
     }
-    private bool CheckCollision(View other)
+    private HashSet<int> GetOccupiedEnemyLanes()
     {
-        return PlayerCarView.Bounds.IntersectsWith(other.Bounds);
+        HashSet<int> lanes = new();
+
+        foreach (var enemy in enemies)
+        {
+            
+            if (enemy.Y < Height * 0.55)
+                lanes.Add(enemy.Lane);
+        }
+
+        return lanes;
+    }
+    private bool CheckCollision(View otherView)
+    {
+
+        double paddingX = 15;
+        double paddingY = 20;
+
+        Rect playerRect = new Rect(
+        PlayerCarView.TranslationX + paddingX,
+        PlayerCarView.TranslationY + paddingY,
+        PlayerCarView.Width - (paddingX * 2),
+        PlayerCarView.Height - (paddingY * 2));
+
+        Rect otherRect = new Rect(
+            otherView.TranslationX + paddingX,
+            otherView.TranslationY + paddingY,
+            otherView.WidthRequest - (paddingX * 2),
+            otherView.HeightRequest - (paddingY * 2));
+
+        return playerRect.IntersectsWith(otherRect);
     }
 
     private async Task AnimateCarToLane(int lane)
@@ -228,8 +276,7 @@ public partial class GamePage : ContentPage
         double targetX =
             laneManager.LanePositions[lane] - (PlayerCarView.Width / 2);
 
-        double deltaX = targetX - PlayerCarView.X;
-        await PlayerCarView.TranslateTo(deltaX, 0, 180, Easing.CubicOut);
+        await PlayerCarView.TranslateTo(targetX - PlayerCarView.X, 0, 180, Easing.CubicOut);
 
         AbsoluteLayout.SetLayoutBounds(
         PlayerCarView,
@@ -240,6 +287,7 @@ public partial class GamePage : ContentPage
             PlayerCarView.Height
         )
     );
+        PositionPlayerCar();
 
         PlayerCarView.TranslationX = 0;
 
@@ -278,9 +326,12 @@ public partial class GamePage : ContentPage
     {
         gameLoop?.Stop();
 
+        SaveService.Coins += sessionCoins;
+
         SaveService.HighScore =
             Math.Max(SaveService.HighScore, (int)score);
 
+        await DisplayAlert("Game Over", $"Score: {(int)score}\nCoins: {sessionCoins}", "OK");
         await Shell.Current.GoToAsync("..");
     }
 }

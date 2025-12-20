@@ -19,6 +19,9 @@ public partial class MainMenuPage : ContentPage
     {
         base.OnAppearing();
 
+        //update total coin from save service
+        TotalCoinLabel.Text = SaveService.Coins.ToString();
+
         // Title fade-in
         await TitleLabel.FadeTo(1, 1200, Easing.CubicOut);
 
@@ -41,6 +44,11 @@ public partial class MainMenuPage : ContentPage
     {
         SoundService.PlayClick();
         await Shell.Current.GoToAsync(nameof(SettingsPage));
+    }
+    private async void OnGarage(object sender, EventArgs e)
+    {
+        SoundService.PlayClick();
+        await Shell.Current.GoToAsync(nameof(GaragePage));
     }
     private async void OnShop(object sender, EventArgs e)
     {

@@ -23,7 +23,7 @@ public class Spawner
         {
             Lane = lane,
             Y = -200,
-            Speed = 250 * difficulty.SpeedMultiplier
+            Speed = 7 * difficulty.SpeedMultiplier
         };
     }
     public PickupCoin CreatePickup(int lane)
@@ -32,7 +32,7 @@ public class Spawner
         {
             Lane = lane,
             Y = -100,
-            Speed = 200
+            Speed = 7
         };
     }
 }

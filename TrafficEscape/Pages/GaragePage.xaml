@@ -1,0 +1,44 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TrafficEscape.Pages.GaragePage"
+             Title="GARAGE"
+             BackgroundColor="#121212">
+
+    <Grid RowDefinitions="Auto, *, Auto" Padding="20">
+        <Label Grid.Row="0" Text="YOUR COLLECTION" FontSize="28" FontAttributes="Bold" 
+               TextColor="White" HorizontalOptions="Center" Margin="0,10"/>
+
+        <CollectionView Grid.Row="1" x:Name="GarageCollection" Margin="0,20">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="10" VerticalItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="#1e1e1e" 
+                            StrokeThickness="1"
+                            Stroke="Gray"
+                            Margin="0,5" 
+                            Padding="10">
+                        
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                            <Image Source="{Binding .}" WidthRequest="70" HeightRequest="120" />
+                            <Button x:Name="EquipBtn" 
+                                    Text="EQUIP" 
+                                    FontSize="12"
+                                    Clicked="OnEquipClicked"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="#2ecc71"/>
+                        </VerticalStackLayout>
+                        
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="2" Text="BACK" Clicked="OnBack" BackgroundColor="#34495e" CornerRadius="20"/>
+    </Grid>
+</ContentPage>

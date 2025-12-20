@@ -20,6 +20,15 @@
             VerticalOptions="Center"
             HorizontalOptions="Center"
             Spacing="30">
+            
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <Image Source="coin.png" WidthRequest="25" HeightRequest="25"/>
+                <Label x:Name="TotalCoinLabel" 
+                       Text="0" 
+                       TextColor="Gold" 
+                       FontSize="20" 
+                       FontAttributes="Bold"/>
+            </HorizontalStackLayout>
 
             <!-- Title -->
             <Label x:Name="TitleLabel"
@@ -38,7 +47,7 @@
                     BackgroundColor="Transparent"
                     WidthRequest="220"
                     HeightRequest="60"
-                    Command="{Binding PlayCommand}" />
+                    Command="{Binding PlayCommand}"/>
 
             <!-- Shop Button -->
             <Button Text="SHOP"
@@ -50,6 +59,17 @@
                     WidthRequest="220"
                     HeightRequest="60"
                     Command="{Binding ShopCommand}" />
+            
+            <!--Garage button-->
+            <Button Text="GARAGE"
+                    FontSize="22"
+                    TextColor="DarkGoldenrod"
+                    BorderColor="DarkGoldenrod"
+                    BorderWidth="3"
+                    BackgroundColor="Transparent"
+                    WidthRequest="220"
+                    HeightRequest="60"
+                    Command="{Binding GarageCommand}" />
 
             <!-- Settings button -->
             <Button Text="SETTINGS"
